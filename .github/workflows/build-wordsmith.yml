@@ -20,7 +20,7 @@ jobs:
         with:
           context: ./db
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}wordsmith-db:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/wordsmith-db:latest
   build-words:
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +38,7 @@ jobs:
         with:
           context: ./words
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}wordsmith-words:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/wordsmith-words:latest
   build-web:
     runs-on: ubuntu-latest
     steps:
@@ -56,4 +56,4 @@ jobs:
         with:
           context: ./web
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}wordsmith-web:latest          
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/wordsmith-web:latest          
