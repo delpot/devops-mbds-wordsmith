@@ -28,4 +28,4 @@ COPY --from=builder /target /target
 # We use the "exec" shell built-in here, to make
 # sure that the program executes as PID 1 and
 # therefore receives signals correctly.
-CMD exec java -jar target/words.jar
+CMD exec java -Xmx8m -Xms8m -jar target/words.jar
