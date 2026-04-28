@@ -19,4 +19,4 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 COPY --from=jre-builder /javaruntime $JAVA_HOME
 RUN mkdir /opt/app
 COPY --from=builder target /opt/app/target
-CMD ["java", "-Xmx8m", "-Xms8m", "-jar", "/opt/app/target/words.jar"]
+CMD ["java", "-jar", "/opt/app/target/words.jar"]
