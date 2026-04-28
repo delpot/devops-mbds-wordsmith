@@ -1,22 +1,31 @@
-FROM maven:3.9.15-eclipse-temurin-21 AS builder
+FROM maven:alpine AS builder
+
+# Copy the file describing the dependencies first.
 COPY pom.xml .
-RUN mvn dependency:go-offline
-COPY src src
+
+# Use maven to install the dependencies.
 RUN mvn verify
 
-FROM eclipse-temurin:21-jdk-alpine AS jre-builder
-RUN $JAVA_HOME/bin/jlink \
-        --add-modules java.base,java.sql,jdk.httpserver \
-        --strip-debug \
-        --no-man-pages \
-        --no-header-files \
-        --compress=2 \
-        --output /javaruntime
+# Now, copy the source files for our application.
+# Remember that when copying a directory, we generally
+# *do not* to do "COPY src ." otherwise the content of
+# "src" gets copied to the directory (instead of
+# creating a subdirectory named "src").
+COPY src src
 
-FROM alpine:latest
-ENV JAVA_HOME=/opt/java/openjdk/
-ENV PATH="${JAVA_HOME}/bin:${PATH}"
-COPY --from=jre-builder /javaruntime $JAVA_HOME
-RUN mkdir /opt/app
-COPY --from=builder target /opt/app/target
-CMD ["java", "-jar", "/opt/app/target/words.jar"]
+# Build the code. Note: this will place multiple
+# JAR files in a directory named "target". There
+# will be our compiled code ("words.jar") but also
+# its dependencies.
+RUN mvn verify
+
+# Start a new stage.
+FROM amazoncorretto:8-alpine-jdk
+
+# Copy the "target" directory.
+COPY --from=builder /target /target
+
+# We use the "exec" shell built-in here, to make
+# sure that the program executes as PID 1 and
+# therefore receives signals correctly.
+CMD exec java -Xmx8m -Xms8m -jar target/words.jar
