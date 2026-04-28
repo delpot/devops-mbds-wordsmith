@@ -1,0 +1,19 @@
+services:
+  web:
+    image: wordsmith-web
+    depends_on:
+      - words
+    ports:
+      - "80:80"
+    volumes:
+      - ./web/static:/static
+  words:
+    image: wordsmith-words
+    depends_on:
+      - db
+  db:
+   image: wordsmith-db
+   environment:
+     POSTGRES_HOST_AUTH_METHOD: trust
+
+
