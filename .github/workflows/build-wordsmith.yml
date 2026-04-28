@@ -10,3 +10,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v6.0.2
+    - name: Build db image
+      run: docker build -t wordsmith-db ./db 
+    - name: Build words image
+      run: docker build -t wordsmith-words ./words 
+    - name: Build web image
+      run: docker build -t wordsmith-web ./web 
